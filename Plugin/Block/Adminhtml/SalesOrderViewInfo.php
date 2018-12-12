@@ -1,18 +1,25 @@
 <?php
+declare(strict_types=1);
+
 namespace Bold\OrderComment\Plugin\Block\Adminhtml;
 
 use Bold\OrderComment\Model\Data\OrderComment;
+use Magento\Sales\Block\Adminhtml\Order\View\Info;
 
+/**
+ * Class SalesOrderViewInfo
+ * @package Bold\OrderComment\Plugin\Block\Adminhtml
+ */
 class SalesOrderViewInfo
 {
     /**
-     * @param \Magento\Sales\Block\Adminhtml\Order\View\Info $subject
+     * @param Info $subject
      * @param string $result
      * @return string
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function afterToHtml(
-        \Magento\Sales\Block\Adminhtml\Order\View\Info $subject,
+        Info $subject,
         $result
     ) {
         $commentBlock = $subject->getLayout()->getBlock('order_comments');

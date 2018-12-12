@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Bold\OrderComment\Test\Unit\Model;
 
 use Bold\OrderComment\Api\Data\OrderCommentInterface;
@@ -6,10 +8,15 @@ use Bold\OrderComment\Model\Data\OrderComment;
 use Bold\OrderComment\Model\OrderCommentConfigProvider;
 use Bold\OrderComment\Model\OrderCommentManagement;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Quote\Api\CartRepositoryInterface;
 use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\QuoteRepository;
 
+/**
+ * Class OrderCommentManagementTest
+ * @package Bold\OrderComment\Test\Unit\Model
+ */
 class OrderCommentManagementTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -65,7 +72,7 @@ class OrderCommentManagementTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Magento\Framework\Exception\CouldNotSaveException
+     * @expectedException CouldNotSaveException
      * @expectedExceptionMessage The order comment could not be saved
      */
     public function testSaveCommentWhenCouldNotSaveQuote()
@@ -76,8 +83,8 @@ class OrderCommentManagementTest extends \PHPUnit_Framework_TestCase
         $this->setupQuoteRepositoryMockQueries($cartId, $cartItemCount);
         
         $exceptionMessage = 'The order comment could not be saved';
-        $exception = new \Magento\Framework\Exception\CouldNotSaveException(__($exceptionMessage));
-        $this->quoteRepositoryMock->expects($this->once())
+        $exception = new CouldNotSaveException(__($exceptionMessage));
+        $this->quoteRepositoryMock->expects(static::once())
             ->method('save')
             ->with($this->quoteMock)
             ->willThrowException($exception);
@@ -100,7 +107,7 @@ class OrderCommentManagementTest extends \PHPUnit_Framework_TestCase
             ->willReturn(8);
 
         $this->setupQuoteRepositoryMockQueries($cartId, $cartItemCount);
-        $this->quoteRepositoryMock->expects($this->never())
+        $this->quoteRepositoryMock->expects(static::never())
             ->method('save');
 
         $this->testObject->saveOrderComment($cartId, $this->mockOrderComment($comment));
@@ -113,14 +120,14 @@ class OrderCommentManagementTest extends \PHPUnit_Framework_TestCase
         $cartItemCount = 12;
 
         $this->setupQuoteRepositoryMockQueries($cartId, $cartItemCount);
-        $this->quoteRepositoryMock->expects($this->once())
+        $this->quoteRepositoryMock->expects(static::once())
             ->method('save')
             ->with($this->quoteMock)
-            ->will($this->returnSelf());
+            ->will(static::returnSelf());
 
         $this->testObject->saveOrderComment($cartId, $this->mockOrderComment($comment));
 
-        $this->assertEquals($comment, $this->quoteMock->getData(OrderComment::COMMENT_FIELD_NAME));
+        static::assertEquals($comment, $this->quoteMock->getData(OrderComment::COMMENT_FIELD_NAME));
     }
 
     public function testSaveCommentWithTags()
@@ -130,24 +137,29 @@ class OrderCommentManagementTest extends \PHPUnit_Framework_TestCase
         $comment = 'test comment<script>alert("abcd");</script><?php die("qwerty")?>';
 
         $this->setupQuoteRepositoryMockQueries($cartId, $cartItemCount);
-        $this->quoteRepositoryMock->expects($this->once())
+        $this->quoteRepositoryMock->expects(static::once())
             ->method('save')
             ->with($this->quoteMock)
-            ->will($this->returnSelf());
+            ->will(static::returnSelf());
 
         $this->testObject->saveOrderComment($cartId, $this->mockOrderComment($comment));
 
-        $this->assertEquals(strip_tags($comment), $this->quoteMock->getData(OrderComment::COMMENT_FIELD_NAME));
-    }
-
-    private function setupQuoteRepositoryMockQueries(int $cartId, int $cartItemCount)
-    {
-        $this->quoteRepositoryMock->expects($this->once())
-            ->method('getActive')->with($cartId)->will($this->returnValue($this->quoteMock));
-        $this->quoteMock->expects($this->once())->method('getItemsCount')->will($this->returnValue($cartItemCount));
+        static::assertEquals(strip_tags($comment), $this->quoteMock->getData(OrderComment::COMMENT_FIELD_NAME));
     }
 
     /**
+     * @param int $cartId
+     * @param int $cartItemCount
+     */
+    private function setupQuoteRepositoryMockQueries(int $cartId, int $cartItemCount)
+    {
+        $this->quoteRepositoryMock->expects(static::once())
+            ->method('getActive')->with($cartId)->will(static::returnValue($this->quoteMock));
+        $this->quoteMock->expects(static::once())->method('getItemsCount')->will(static::returnValue($cartItemCount));
+    }
+
+    /**
+     * @param string|null $comment
      * @return \PHPUnit_Framework_MockObject_MockObject|OrderCommentInterface
      */
     private function mockOrderComment(string $comment = null): \PHPUnit_Framework_MockObject_MockObject
@@ -157,7 +169,7 @@ class OrderCommentManagementTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         if ($comment !== null) {
-            $orderCommentMock->expects($this->once())
+            $orderCommentMock->expects(static::once())
                 ->method('getComment')
                 ->willReturn($comment);
         }

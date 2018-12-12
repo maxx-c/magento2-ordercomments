@@ -1,7 +1,12 @@
 <?php
+declare(strict_types=1);
+
 namespace Bold\OrderComment\Test\Integration\Model;
 
+use Bold\OrderComment\Api\Data\OrderCommentInterface;
+use Bold\OrderComment\Api\OrderCommentManagementInterface;
 use Bold\OrderComment\Model\Data\OrderComment;
+use Magento\Quote\Model\Quote;
 use Magento\TestFramework\Helper\Bootstrap;
 
 /**
@@ -15,6 +20,7 @@ class OrderCommentManagementTest extends \PHPUnit_Framework_TestCase
     /**
      * @magentoDataFixture Magento/Sales/_files/quote_with_bundle.php
      * @return void
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function testSaveOrderComment()
     {
@@ -22,12 +28,12 @@ class OrderCommentManagementTest extends \PHPUnit_Framework_TestCase
 
         $comment = 'test comment';
 
-        /** @var \Magento\Quote\Model\Quote $quote */
-        $quote = $objectManager->create('\Magento\Quote\Model\Quote');
+        /** @var Quote $quote */
+        $quote = $objectManager->create(Quote::class);
         $quote->load('test01', 'reserved_order_id');
         
-        $model = $objectManager->create('\Bold\OrderComment\Api\OrderCommentManagementInterface');
-        $data = $objectManager->create('\Bold\OrderComment\Api\Data\OrderCommentInterface');
+        $model = $objectManager->create(OrderCommentManagementInterface::class);
+        $data = $objectManager->create(OrderCommentInterface::class);
 
         $data->setComment($comment);
         

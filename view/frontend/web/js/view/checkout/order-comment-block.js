@@ -22,7 +22,9 @@ define(
                                 target(limitedVal);
                             }
                             result.css("_error");
-                            timer = setTimeout(function () { result.css(""); }, 800);
+                            timer = setTimeout(function () {
+                                result.css("");
+                            }, 800);
                         } else {
                             target(val);
                             result.css("");
@@ -41,26 +43,26 @@ define(
             defaults: {
                 template: 'Bold_OrderComment/checkout/order-comment-block'
             },
-            initialize: function() {
+            initialize: function () {
                 this._super();
                 var self = this;
                 this.comment = ko.observable("").extend({maxOrderCommentLength: this.getMaxLength()});
 
-                this.remainingCharacters = ko.computed(function(){
+                this.remainingCharacters = ko.computed(function () {
                     return self.getMaxLength() - self.comment().length;
                 });
 
             },
-            hasMaxLength: function() {
+            hasMaxLength: function () {
                 return window.checkoutConfig.max_length > 0;
             },
             getMaxLength: function () {
                 return window.checkoutConfig.max_length;
             },
-            getInitialCollapseState: function() {
+            getInitialCollapseState: function () {
                 return window.checkoutConfig.comment_initial_collapse_state;
             },
-            isInitialStateOpened: function() {
+            isInitialStateOpened: function () {
                 return this.getInitialCollapseState() === 1
             }
         });

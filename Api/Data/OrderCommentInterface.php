@@ -1,6 +1,12 @@
 <?php
+declare(strict_types=1);
+
 namespace Bold\OrderComment\Api\Data;
 
+/**
+ * Interface OrderCommentInterface
+ * @package Bold\OrderComment\Api\Data
+ */
 interface OrderCommentInterface
 {
     /**

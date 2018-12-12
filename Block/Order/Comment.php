@@ -1,13 +1,19 @@
 <?php
+declare(strict_types=1);
 
 namespace Bold\OrderComment\Block\Order;
 
 use Bold\OrderComment\Model\Data\OrderComment;
 use Magento\Framework\Registry;
+use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context as TemplateContext;
 use Magento\Sales\Model\Order;
 
-class Comment extends \Magento\Framework\View\Element\Template
+/**
+ * Class Comment
+ * @package Bold\OrderComment\Block\Order
+ */
+class Comment extends Template
 {
     /**
      * Core registry
@@ -16,6 +22,12 @@ class Comment extends \Magento\Framework\View\Element\Template
      */
     protected $coreRegistry = null;
 
+    /**
+     * Comment constructor.
+     * @param TemplateContext $context
+     * @param Registry $registry
+     * @param array $data
+     */
     public function __construct(
         TemplateContext $context,
         Registry $registry,
@@ -27,22 +39,34 @@ class Comment extends \Magento\Framework\View\Element\Template
         parent::__construct($context, $data);
     }
 
-    public function getOrder() : Order
+    /**
+     * @return Order
+     */
+    public function getOrder(): Order
     {
         return $this->coreRegistry->registry('current_order');
     }
 
+    /**
+     * @return string
+     */
     public function getOrderComment(): string
     {
         return trim($this->getOrder()->getData(OrderComment::COMMENT_FIELD_NAME));
     }
 
-    public function hasOrderComment() : bool
+    /**
+     * @return bool
+     */
+    public function hasOrderComment(): bool
     {
         return strlen($this->getOrderComment()) > 0;
     }
 
-    public function getOrderCommentHtml() : string
+    /**
+     * @return string
+     */
+    public function getOrderCommentHtml(): string
     {
         return nl2br($this->escapeHtml($this->getOrderComment()));
     }

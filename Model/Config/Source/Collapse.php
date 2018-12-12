@@ -1,8 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace Bold\OrderComment\Model\Config\Source;
 
-class Collapse implements \Magento\Framework\Option\ArrayInterface
+use Magento\Framework\Data\OptionSourceInterface;
+
+/**
+ * Class Collapse
+ * @package Bold\OrderComment\Model\Config\Source
+ */
+class Collapse implements OptionSourceInterface
 {
     /**
      * Options getter
@@ -14,7 +21,7 @@ class Collapse implements \Magento\Framework\Option\ArrayInterface
         $options = $this->toArray();
         $result = [];
 
-        foreach($options as $value => $label){
+        foreach ($options as $value => $label) {
             $result[] = [
                 'value' => $value, 'label' => $label
             ];

@@ -1,33 +1,39 @@
 <?php
+declare(strict_types=1);
 
 namespace Bold\OrderComment\Setup;
 
+use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\Setup\InstallDataInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
+use Magento\Quote\Setup\QuoteSetupFactory;
+use Magento\Sales\Setup\SalesSetupFactory;
 
-use Magento\Framework\DB\Ddl\Table;
-
+/**
+ * Class InstallData
+ * @package Bold\OrderComment\Setup
+ */
 class InstallData implements InstallDataInterface
 {
     /**
-     * @var \Magento\Sales\Setup\SalesSetupFactory
+     * @var SalesSetupFactory
      */
     protected $salesSetupFactory;
     
     /**
-     * @var \Magento\Quote\Setup\QuoteSetupFactory
+     * @var QuoteSetupFactory
      */
     protected $quoteSetupFactory;
 
     /**
      * InstallData constructor.
-     * @param \Magento\Sales\Setup\SalesSetupFactory $salesSetupFactory
-     * @param \Magento\Quote\Setup\QuoteSetupFactory $quoteSetupFactory
+     * @param SalesSetupFactory $salesSetupFactory
+     * @param QuoteSetupFactory $quoteSetupFactory
      */
     public function __construct(
-        \Magento\Sales\Setup\SalesSetupFactory $salesSetupFactory,
-        \Magento\Quote\Setup\QuoteSetupFactory $quoteSetupFactory
+        SalesSetupFactory $salesSetupFactory,
+        QuoteSetupFactory $quoteSetupFactory
     ) {
         $this->salesSetupFactory = $salesSetupFactory;
         $this->quoteSetupFactory = $quoteSetupFactory;
@@ -37,6 +43,7 @@ class InstallData implements InstallDataInterface
      * @param ModuleDataSetupInterface $setup
      * @param ModuleContextInterface $context
      * @return void
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
     {

@@ -1,29 +1,41 @@
 <?php
+declare(strict_types=1);
+
 namespace Bold\OrderComment\Test\Unit\Model;
 
+use Bold\OrderComment\Model\Data\OrderComment;
+use Bold\OrderComment\Model\GuestOrderCommentManagement;
+use Bold\OrderComment\Model\OrderCommentManagement;
+use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
+use Magento\Quote\Api\CartRepositoryInterface;
+use Magento\Quote\Model\Quote;
 use Magento\Quote\Test\Unit\Model\GuestCart\GuestCartTestHelper;
 
+/**
+ * Class GuestOrderCommentManagementTest
+ * @package Bold\OrderComment\Test\Unit\Model
+ */
 class GuestOrderCommentManagementTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Bold\OrderComment\Model\GuestOrderCommentManagement
+     * @var GuestOrderCommentManagement
      */
     protected $testObject;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    protected $quoteIdMaskFactoryMock;
+    protected $quoteIdFactoryMock;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    protected $quoteIdMaskMock;
+    protected $quoteIdMock;
 
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    protected $orderCommentManagementMock;
+    protected $commentMock;
 
     /**
      * @var string
@@ -47,12 +59,12 @@ class GuestOrderCommentManagementTest extends \PHPUnit_Framework_TestCase
     
     protected function setUp()
     {
-        $objectManager = new \Magento\Framework\TestFramework\Unit\Helper\ObjectManager($this);
+        $objectManager = new ObjectManager($this);
         
-        $this->quoteRepositoryMock = $this->getMock('\Magento\Quote\Api\CartRepositoryInterface');
+        $this->quoteRepositoryMock = $this->getMock(CartRepositoryInterface::class);
 
         $this->quoteMock = $this->getMock(
-            '\Magento\Quote\Model\Quote',
+            Quote::class,
             [
                 'getItemsCount',
                 'save',
@@ -63,8 +75,8 @@ class GuestOrderCommentManagementTest extends \PHPUnit_Framework_TestCase
             false
         );
         
-        $this->orderCommentManagementMock = $this->getMock(
-            'Bold\OrderComment\Model\OrderCommentManagement',
+        $this->commentMock = $this->getMock(
+            OrderCommentManagement::class,
             [],
             [],
             '',
@@ -75,16 +87,16 @@ class GuestOrderCommentManagementTest extends \PHPUnit_Framework_TestCase
         $this->cartId = 123;
 
         $guestCartTestHelper = new GuestCartTestHelper($this);
-        list($this->quoteIdMaskFactoryMock, $this->quoteIdMaskMock) = $guestCartTestHelper->mockQuoteIdMask(
+        list($this->quoteIdFactoryMock, $this->quoteIdMock) = $guestCartTestHelper->mockQuoteIdMask(
             $this->maskedCartId,
             $this->cartId
         );
 
         $this->testObject = $objectManager->getObject(
-            'Bold\OrderComment\Model\GuestOrderCommentManagement',
+            GuestOrderCommentManagement::class,
             [
-                'orderCommentManagement' => $this->orderCommentManagementMock,
-                'quoteIdMaskFactory' => $this->quoteIdMaskFactoryMock
+                'orderCommentManagement' => $this->commentMock,
+                'quoteIdMaskFactory' => $this->quoteIdFactoryMock
             ]
         );
     }
@@ -93,15 +105,15 @@ class GuestOrderCommentManagementTest extends \PHPUnit_Framework_TestCase
     {
         $comment = 'test comment';
 
-        $orderCommentMock = $this->getMockBuilder('\Bold\OrderComment\Model\Data\OrderComment')
+        $orderCommentMock = $this->getMockBuilder(OrderComment::class)
             ->disableOriginalConstructor()
             ->getMock();
         
-        $this->orderCommentManagementMock->expects($this->once())
+        $this->commentMock->expects(static::once())
             ->method('saveOrderComment')
             ->with($this->cartId, $orderCommentMock)
             ->willReturn($comment);
         $result = $this->testObject->saveOrderComment($this->maskedCartId, $orderCommentMock);
-        $this->assertEquals($comment, $result);
+        static::assertEquals($comment, $result);
     }
 }

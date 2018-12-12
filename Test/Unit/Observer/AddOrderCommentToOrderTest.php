@@ -5,6 +5,10 @@ use Bold\OrderComment\Observer\AddOrderCommentToOrder;
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Bold\OrderComment\Model\Data\OrderComment;
 
+/**
+ * Class AddOrderCommentToOrderTest
+ * @package Bold\OrderComment\Test\Unit\Observer
+ */
 class AddOrderCommentToOrderTest extends \PHPUnit_Framework_TestCase
 {
     protected $objectManager;
@@ -41,18 +45,22 @@ class AddOrderCommentToOrderTest extends \PHPUnit_Framework_TestCase
             ->willReturn($eventMock);
         $eventMock->expects($this->atLeastCount(2))
             ->method('getData')
-            ->will($this->returnValueMap($map));
+            ->will(static::returnValueMap($map));
 
-        $quoteMock->expects($this->atLeastOnce())
+        $quoteMock->expects(static::atLeastOnce())
             ->method('getData')
             ->with(OrderComment::COMMENT_FIELD_NAME)
             ->willReturn($comment);
         
         $this->observer->execute($observerMock);
 
-        $this->assertEquals($comment, $orderMock->getData(OrderComment::COMMENT_FIELD_NAME));
+        static::assertEquals($comment, $orderMock->getData(OrderComment::COMMENT_FIELD_NAME));
     }
 
+    /**
+     * @param $num
+     * @return \PHPUnit_Framework_MockObject_Matcher_InvokedAtLeastCount
+     */
     public function atLeastCount($num)
     {
         return new \PHPUnit_Framework_MockObject_Matcher_InvokedAtLeastCount($num);

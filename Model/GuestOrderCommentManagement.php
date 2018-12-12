@@ -1,32 +1,40 @@
 <?php
+declare(strict_types=1);
+
 namespace Bold\OrderComment\Model;
 
+use Bold\OrderComment\Api\Data\OrderCommentInterface;
+use Bold\OrderComment\Api\GuestOrderCommentManagementInterface;
+use Bold\OrderComment\Api\OrderCommentManagementInterface;
 use Magento\Quote\Model\QuoteIdMaskFactory;
 
-class GuestOrderCommentManagement implements \Bold\OrderComment\Api\GuestOrderCommentManagementInterface
+/**
+ * Class GuestOrderCommentManagement
+ * @package Bold\OrderComment\Model
+ */
+class GuestOrderCommentManagement implements GuestOrderCommentManagementInterface
 {
-
     /**
      * @var QuoteIdMaskFactory
      */
     protected $quoteIdMaskFactory;
 
     /**
-     * @var \Bold\OrderComment\Api\OrderCommentManagementInterface
+     * @var OrderCommentManagementInterface
      */
-    protected $orderCommentManagement;
+    protected $commentManagement;
     
     /**
      * GuestOrderCommentManagement constructor.
      * @param QuoteIdMaskFactory $quoteIdMaskFactory
-     * @param \Bold\OrderComment\Api\OrderCommentManagementInterface $orderCommentManagement
+     * @param OrderCommentManagementInterface $commentManagement
      */
     public function __construct(
         QuoteIdMaskFactory $quoteIdMaskFactory,
-        \Bold\OrderComment\Api\OrderCommentManagementInterface $orderCommentManagement
+        OrderCommentManagementInterface $commentManagement
     ) {
         $this->quoteIdMaskFactory = $quoteIdMaskFactory;
-        $this->orderCommentManagement = $orderCommentManagement;
+        $this->commentManagement = $commentManagement;
     }
 
     /**
@@ -34,9 +42,9 @@ class GuestOrderCommentManagement implements \Bold\OrderComment\Api\GuestOrderCo
      */
     public function saveOrderComment(
         $cartId,
-        \Bold\OrderComment\Api\Data\OrderCommentInterface $orderComment
+        OrderCommentInterface $orderComment
     ) {
         $quoteIdMask = $this->quoteIdMaskFactory->create()->load($cartId, 'masked_id');
-        return $this->orderCommentManagement->saveOrderComment($quoteIdMask->getQuoteId(), $orderComment);
+        return $this->commentManagement->saveOrderComment($quoteIdMask->getQuoteId(), $orderComment);
     }
 }

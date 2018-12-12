@@ -76,7 +76,7 @@ define(
 
                 return result;
             },
-            hasMaxLength: function() {
+            hasMaxLength: function () {
                 return window.checkoutConfig.max_length > 0;
             },
             getMaxLength: function () {

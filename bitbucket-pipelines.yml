@@ -1,0 +1,31 @@
+image: rafaelcgstz/magento2
+pipelines:
+  default:
+  - step:
+      name: Composer install
+      caches:
+      - composer
+      script:
+      - echo "{\"http-basic\":{\"repo.magento.com\":{\"username\":\"$MAGENTO_USERNAME\",\"password\":\"$MAGENTO_PASSWORD\"}}}" > auth.json
+      - composer install --prefer-dist --optimize-autoloader
+  - step:
+      name: PHP CodeSniffer
+      caches:
+      - composer
+      script:
+      - composer install
+      - php vendor/bin/phpcs --standard=PSR2 -s Api/ Block/ Model/ Observer/ Plugin/ Setup/ Test/ view/
+  - step:
+      name: PHP Mess Detector
+      caches:
+      - composer
+      script:
+      - composer install
+      - php vendor/bin/phpmd Api/,Block/,Model/,Observer/,Plugin/,Setup/,Test/,view/ text cleancode,codesize,controversial,design,naming,unusedcode
+  - step:
+      name: PHP Copy/Paste Detector
+      caches:
+      - composer
+      script:
+      - composer install
+      - php vendor/bin/phpcpd Api/ Block/ Model/ Observer/ Plugin/ Setup/ Test/ view/

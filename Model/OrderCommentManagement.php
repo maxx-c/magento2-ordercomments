@@ -1,18 +1,27 @@
 <?php
+declare(strict_types=1);
+
 namespace Bold\OrderComment\Model;
 
+use Bold\OrderComment\Api\Data\OrderCommentInterface;
+use Bold\OrderComment\Api\OrderCommentManagementInterface;
 use Bold\OrderComment\Model\Data\OrderComment;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\ValidatorException;
+use Magento\Quote\Api\CartRepositoryInterface;
 
-class OrderCommentManagement implements \Bold\OrderComment\Api\OrderCommentManagementInterface
+/**
+ * Class OrderCommentManagement
+ * @package Bold\OrderComment\Model
+ */
+class OrderCommentManagement implements OrderCommentManagementInterface
 {
     /**
      * Quote repository.
      *
-     * @var \Magento\Quote\Api\CartRepositoryInterface
+     * @var CartRepositoryInterface
      */
     protected $quoteRepository;
 
@@ -23,10 +32,11 @@ class OrderCommentManagement implements \Bold\OrderComment\Api\OrderCommentManag
 
     /**
      *
-     * @param \Magento\Quote\Api\CartRepositoryInterface $quoteRepository Quote repository.
+     * @param CartRepositoryInterface $quoteRepository Quote repository.
+     * @param ScopeConfigInterface $scopeConfig
      */
     public function __construct(
-        \Magento\Quote\Api\CartRepositoryInterface $quoteRepository,
+        CartRepositoryInterface $quoteRepository,
         ScopeConfigInterface $scopeConfig
     ) {
         $this->quoteRepository = $quoteRepository;
@@ -35,14 +45,15 @@ class OrderCommentManagement implements \Bold\OrderComment\Api\OrderCommentManag
 
     /**
      * @param int $cartId
-     * @param \Bold\OrderComment\Api\Data\OrderCommentInterface $orderComment
+     * @param OrderCommentInterface $orderComment
      * @return null|string
      * @throws CouldNotSaveException
      * @throws NoSuchEntityException
+     * @throws ValidatorException
      */
     public function saveOrderComment(
         $cartId,
-        \Bold\OrderComment\Api\Data\OrderCommentInterface $orderComment
+        OrderCommentInterface $orderComment
     ) {
         $quote = $this->quoteRepository->getActive($cartId);
         if (!$quote->getItemsCount()) {
