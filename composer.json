@@ -3,7 +3,8 @@
   "description": "Magento 2 Module to add  a comment field above the place order button in the checkout",
   "version": "1.6.1",
   "require": {
-    "php": "~7.0.0|~7.1.0|~7.2.0"
+    "php": "~7.0.0|~7.1.0|~7.2.0",
+    "magento/framework": ">=100.0.0"
   },
   "require-dev": {
     "phpmd/phpmd": "^2.6",
